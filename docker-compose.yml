@@ -1,0 +1,6 @@
+services:
+  website:
+    image: my-devops-site
+    container_name: my-site-compose
+    ports:
+      - "8080:80"
