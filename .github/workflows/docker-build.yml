@@ -1,4 +1,4 @@
-name: Docker Build Test
+name: Deploy to AWS
 
 on:
   push:
@@ -6,21 +6,20 @@ on:
       - master
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: docker build -t my-devops-site .
-
-      - name: Run container
-        run: docker run -d -p 8080:80 --name test-site my-devops-site
-
-      - name: Wait for Nginx
-        run: sleep 5
-
-      - name: Test website
-        run: curl http://localhost:8080
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/devops-project
+            git pull
+            sudo docker build -t my-devops-site .
+            sudo docker stop my-site || true
+            sudo docker rm my-site || true
+            sudo docker run -d -p 80:80 --name my-site my-devops-site
