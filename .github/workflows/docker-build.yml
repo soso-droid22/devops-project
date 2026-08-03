@@ -35,4 +35,4 @@ jobs:
             sudo docker pull droid223/my-devops-site
             sudo docker stop my-site || true
             sudo docker rm my-site || true
-            sudo docker run -d -p 80:80 --name my-site droid223/my-devops-site
+            sudo docker run -d -p 8080:80 --name my-site droid223/my-devops-site
